@@ -29,25 +29,33 @@ trait HandlesConversionsTrait
 
     public function getConversionUrls(\Spatie\MediaLibrary\MediaCollections\Models\Media $media): array
     {
+
         return [
             // original needed several purposes like cropping
             '__original__' => $media->getFullUrl(),
-            'indexView' => $media->getFullUrl($this->meta['conversionOnIndexView'] ?? ''),
-            'detailView' => $media->getFullUrl($this->meta['conversionOnDetailView'] ?? ''),
-            'form' => $media->getFullUrl($this->meta['conversionOnForm'] ?? ''),
-            'preview' => $media->getFullUrl($this->meta['conversionOnPreview'] ?? ''),
+            'indexView' =>$media->getFullUrl($this->getConversionForMete($media,'conversionOnIndexView')),
+            'detailView' => $media->getFullUrl($this->getConversionForMete($media,'conversionOnDetailView')),
+            'form' => $media->getFullUrl($this->getConversionForMete($media,'conversionOnForm')),
+            'preview' => $media->getFullUrl($this->getConversionForMete($media,'conversionOnPreview')),
         ];
     }
+    private function getConversionForMete(\Spatie\MediaLibrary\MediaCollections\Models\Media $media,string $metaKey){
+        if(!isset($this->meta[$metaKey]))
+            return '';
+        return $media->hasGeneratedConversion($this->meta[$metaKey])?$this->meta[$metaKey]:'';
+    }
+
+
 
     public function getTemporaryConversionUrls(\Spatie\MediaLibrary\MediaCollections\Models\Media $media): array
     {
         return [
             // original needed several purposes like cropping
-            '__original__' => $media->getTemporaryUrl($this->secureUntil),
-            'indexView' => $media->getTemporaryUrl($this->secureUntil, $this->meta['conversionOnIndexView'] ?? ''),
-            'detailView' => $media->getTemporaryUrl($this->secureUntil, $this->meta['conversionOnDetailView'] ?? ''),
-            'form' => $media->getTemporaryUrl($this->secureUntil, $this->meta['conversionOnForm'] ?? ''),
-            'preview' => $media->getTemporaryUrl($this->secureUntil, $this->meta['conversionOnPreview'] ?? ''),
+            '__original__' => $media->getTemporaryUrl(),
+            'indexView' =>$media->getTemporaryUrl($this->getConversionForMete($media,'conversionOnIndexView')),
+            'detailView' => $media->getTemporaryUrl($this->getConversionForMete($media,'conversionOnDetailView')),
+            'form' => $media->getTemporaryUrl($this->getConversionForMete($media,'conversionOnForm')),
+            'preview' => $media->getTemporaryUrl($this->getConversionForMete($media,'conversionOnPreview')),
         ];
     }
 }
